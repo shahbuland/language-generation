@@ -8,6 +8,6 @@ LR_DECAY = 0.97
 LR_DECAY_STEP = 10 # Delay after this many iters
 DECAY_RATE = 0.95
 GRAD_CLIP = 5
-HIDDEN_UNITS = 128
+HIDDEN_SIZE = 128
 # Data
 DATASET_NAME = "nosleep.txt"
