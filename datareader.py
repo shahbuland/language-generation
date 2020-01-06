@@ -42,4 +42,14 @@ def txt_to_npy(dataset_name):
 
 # Loads and returns dataset of certain name
 def load_dataset(dataset_name):
-	return np.load("./datasets/"+dataset_name)
+	return np.load("./datasets/"+dataset_name+".npy")
+
+# Simply gets rise of vocab
+def get_vocab_size():
+	f = open("vocab.txt","r")
+	vocab = f.read()
+	vocab = vocab.split(" ") # array of characters
+	vocab[-1] = vocab[-1][0] # last char will have \n, so we remove it
+	vocab.append(" ") # Add space
+
+	return len(vocab)
