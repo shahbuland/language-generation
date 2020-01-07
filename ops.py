@@ -2,7 +2,8 @@ from constants import *
 import numpy as np
 import torch
 from torch import nn
-from torch.nn.functional import F
+from torch.nn import functional as F
+from datareader import get_vocab
 
 def prep_batch(batch):
 	# Batch comes in as numpy array
@@ -25,3 +26,11 @@ def one_hot_from_output(T):
 
 	return new_T
 
+# convert sequence of one hot vectors into string
+def one_hot_to_string(T):
+	vocab = get_vocab()
+	s = ""
+	for v in T:
+		ind = int(torch.argmax(v))
+		s+=vocab[ind]
+	return s	

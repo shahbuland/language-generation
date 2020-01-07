@@ -7,17 +7,21 @@ def read_file(dataset_name):
 	f = open("./raw_datasets/"+dataset_name,"r")
 	return f.read()
 
+def get_vocab():
+	f = open("vocab.txt","r")
+	vocab = f.read()
+	vocab = vocab.split(" ")
+	vocab[-1] = vocab[-1][0] # remove \n from last char
+	vocab.append(" ") # add space
+	return vocab
+
 # Converts string to one hot array
 # Only basic punctuation is preserved,
 # all else is converted to a space
 # capitalization is ignored
 # uses vocab
 def string_to_1_hot_array(s):
-	f = open("vocab.txt","r")
-	vocab = f.read()
-	vocab = vocab.split(" ") # array of characters
-	vocab[-1] = vocab[-1][0] # last char will have \n, so we remove it
-	vocab.append(" ") # Add space key
+	vocab = get_vocab()
 	vocab_size = len(vocab)
 	dataset = [] # Datast intially stored as list
 	# Now we use vocab to convert s into a sequence of vectors
@@ -46,10 +50,4 @@ def load_dataset(dataset_name):
 
 # Simply gets rise of vocab
 def get_vocab_size():
-	f = open("vocab.txt","r")
-	vocab = f.read()
-	vocab = vocab.split(" ") # array of characters
-	vocab[-1] = vocab[-1][0] # last char will have \n, so we remove it
-	vocab.append(" ") # Add space
-
-	return len(vocab)
+	return len(get_vocab())

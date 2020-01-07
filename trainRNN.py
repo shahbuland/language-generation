@@ -11,9 +11,10 @@ from ops import prep_batch
 training_data = load_dataset(DATASET_NAME)
 data_size = training_data.shape[0]
 
-def get_batch(batch_size):
-	rand_ind = np.random.randint(data_size,size=batch_size)
-	batch = training_data[rand_ind]
+# Returns BATCH_SIZE sequences of SEQ_LENGTH
+def get_batch():
+	rand_ind = np.random.randint(data_size-SEQ_LENGTH,size=BATCH_SIZE)
+	batch = np.asarray([training_data[rand_ind[i]:rand_ind[i]+SEQ_LENGTH] for i in range(BATCH_SIZE))
 	
 	return prep_batch(batch)
 
