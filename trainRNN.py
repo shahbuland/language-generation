@@ -15,12 +15,12 @@ data_size = training_data.shape[0]
 # Returns BATCH_SIZE sequences of SEQ_LENGTH
 def get_batch():
 	rand_ind = np.random.randint(data_size-SEQ_LENGTH,size=BATCH_SIZE)
-	batch = np.asarray([training_data[rand_ind[i]:rand_ind[i]+SEQ_LENGTH] for i in range(BATCH_SIZE)])
-	
-	return prep_batch(batch)
+	seqs = [[training_data[i+j] for i in rand_ind] for j in range(SEQ_LENGTH)]
+	return prep_batch(np.asarray(seqs))
 
 # get model ready
 model = charRNN(get_vocab_size())
+if USE_CUDA: model.cuda()
 opt = Adam(model.parameters(),lr=LEARNING_RATE)
 LF = nn.MSELoss()
 
@@ -28,18 +28,14 @@ LF = nn.MSELoss()
 for ITER in range(ITERATIONS):
 	opt.zero_grad()
 
-	batch = get_batch().squeeze().unsqueeze(1)
-	Y = []
-	
-	h = model.initH()
-	for i in range(SEQ_LENGTH-1):
-		y,h = model(batch[i],h)
-		Y.append(y)
-	Y = torch.cat(Y)
-	loss = LF(Y.unsqueeze(1),batch[1:])
+	batch = get_batch()
+	y = model(batch[:-1])	
+	loss = LF(y,batch[1:])
 	loss.backward()
+	nn.utils.clip_grad_norm_(model.parameters(), 5)
 	opt.step()
 
-	print(ops.one_hot_to_string(ops.one_hot_from_output(Y)))
-	
+	# randomly sample one sequence
+	sample = y[:,np.random.randint(BATCH_SIZE),:]
+	print(ops.one_hot_to_string(ops.one_hot_from_output(sample)))
 
